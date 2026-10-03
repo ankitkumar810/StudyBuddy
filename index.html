@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyBuddy - Pomodoro, Flashcards & Quiz</title>
+  <meta name="description" content="An all-in-one aesthetic study buddy app with customizable Pomodoro timer, 3D flashcards, and interactive quiz maker.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Background Glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <div class="app-layout">
+    <!-- Top Header -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+            <path d="M6 6h10"></path>
+            <path d="M6 10h10"></path>
+            <path d="M12 14v4"></path>
+            <circle cx="12" cy="14" r="1"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>StudyBuddy</h1>
+          <span class="badge-pill">Smart Study Companion</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button id="nav-pomodoro" class="tab-btn active" data-tab="pomodoro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Pomodoro</span>
+        </button>
+        <button id="nav-flashcards" class="tab-btn" data-tab="flashcards">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <span>Flashcards</span>
+        </button>
+        <button id="nav-quiz" class="tab-btn" data-tab="quiz">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>Quiz Mode</span>
+        </button>
+        <button id="nav-settings" class="tab-btn" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span>Manage & Settings</span>
+        </button>
+      </nav>
+
+      <!-- Quick stats & Sound trigger -->
+      <div class="header-actions">
+        <button id="toggle-ambient-btn" class="icon-action-btn" title="Toggle Calming Study Noise">
+          <svg id="ambient-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+          </svg>
+          <span class="ambient-label">Ambient: Off</span>
+        </button>
+        <div class="streak-pill" title="Daily Study Session Streak">
+          <span class="flame">🔥</span>
+          <span id="streak-counter">1 Day Streak</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+
+      <!-- ============================================== -->
+      <!-- TAB 1: POMODORO CLOCK                          -->
+      <!-- ============================================== -->
+      <section id="tab-pomodoro" class="view-panel active">
+        <div class="pomodoro-grid">
+          <!-- Main Clock Card -->
+          <div class="glass-card clock-card">
+            <!-- Mode Switcher -->
+            <div class="timer-mode-selector">
+              <button id="mode-work" class="mode-btn active" data-mode="work">Focus Work</button>
+              <button id="mode-short" class="mode-btn" data-mode="shortBreak">Short Break</button>
+              <button id="mode-long" class="mode-btn" data-mode="longBreak">Long Break</button>
+            </div>
+
+            <!-- Current Task Input -->
+            <div class="current-task-bar">
+              <input type="text" id="current-task-input" placeholder="What are you focusing on right now? (e.g. Chapter 4 Biology)" maxlength="80">
+            </div>
+
+            <!-- Circular Timer Container -->
+            <div class="timer-circle-wrapper">
+              <svg class="progress-ring" viewBox="0 0 320 320">
+                <circle class="progress-ring-bg" cx="160" cy="160" r="140"></circle>
+                <circle id="timer-progress-bar" class="progress-ring-indicator" cx="160" cy="160" r="140"></circle>
+              </svg>
+              <div class="timer-display-content">
+                <span id="timer-status-badge" class="status-badge">READY TO FOCUS</span>
+                <div id="timer-time" class="time-string">25:00</div>
+                <div class="session-round-info">
+                  Cycle <span id="current-cycle-num">1</span> / <span id="total-cycles-num">4</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Control Buttons -->
+            <div class="timer-controls">
+              <button id="timer-start-pause-btn" class="btn btn-primary btn-large">
+                <svg id="play-pause-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span id="play-pause-text">Start Focus</span>
+              </button>
+              <button id="timer-reset-btn" class="btn btn-secondary" title="Reset Session">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                </svg>
+                <span>Reset</span>
+              </button>
+              <button id="timer-skip-btn" class="btn btn-secondary" title="Skip to Next Mode">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                  <line x1="19" y1="5" x2="19" y2="19"></line>
+                </svg>
+                <span>Skip</span>
+              </button>
+            </div>
+
+            <!-- Quick Duration Tweak Links -->
+            <div class="quick-timer-presets">
+              <span class="preset-label">Quick Set:</span>
+              <button class="chip-btn" data-minutes="15">15 min</button>
+              <button class="chip-btn" data-minutes="25">25 min</button>
+              <button class="chip-btn" data-minutes="45">45 min</button>
+              <button class="chip-btn" data-minutes="60">60 min</button>
+            </div>
+          </div>
+
+          <!-- Pomodoro Stats & Mini To-Do Sidebar -->
+          <div class="sidebar-column">
+            <!-- Today's Productivity Summary -->
+            <div class="glass-card stat-summary-card">
+              <h3>Today's Study Log</h3>
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span id="stat-completed-sessions" class="stat-number">0</span>
+                  <span class="stat-label">Focus Sessions</span>
+                </div>
+                <div class="stat-box">
+                  <span id="stat-total-minutes" class="stat-number">0</span>
+                  <span class="stat-label">Minutes Focused</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Session Tasks Checklist -->
+            <div class="glass-card session-tasks-card">
+              <div class="card-header-row">
+                <h3>Session Goals</h3>
+                <span class="subtext" id="task-completed-ratio">0/0 done</span>
+              </div>
+              <form id="add-task-form" class="inline-input-form">
+                <input type="text" id="new-task-input" placeholder="Add study goal..." required>
+                <button type="submit" class="btn btn-sm btn-accent">+</button>
+              </form>
+              <ul id="session-tasks-list" class="tasks-checklist">
+                <!-- Dynamically rendered -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: FLASHCARDS                              -->
+      <!-- ============================================== -->
+      <section id="tab-flashcards" class="view-panel">
+        <div class="flashcards-container">
+          <!-- Controls Header -->
+          <div class="flashcard-toolbar glass-card">
+            <div class="toolbar-left">
+              <label for="deck-select">Category / Deck:</label>
+              <select id="deck-select" class="custom-select">
+                <option value="all">All Flashcards</option>
+              </select>
+            </div>
+
+            <div class="toolbar-center">
+              <span id="card-index-indicator" class="index-badge">Card 1 of 10</span>
+              <div class="filter-toggles">
+                <button id="filter-all-btn" class="filter-btn active">All</button>
+                <button id="filter-starred-btn" class="filter-btn">Needs Review ⭐</button>
+              </div>
+            </div>
+
+            <div class="toolbar-right">
+              <button id="shuffle-deck-btn" class="btn btn-sm btn-secondary" title="Shuffle Cards">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                  <path d="M16 3h5v5"></path>
+                  <path d="M4 20L21 3"></path>
+                  <path d="M21 16v5h-5"></path>
+                  <path d="M15 15l6 6"></path>
+                  <path d="M4 4l5 5"></path>
+                </svg>
+                <span>Shuffle</span>
+              </button>
+              <button id="quick-add-card-btn" class="btn btn-sm btn-accent">
+                + New Card
+              </button>
+            </div>
+          </div>
+
+          <!-- The Interactive 3D Flashcard Stage -->
+          <div class="flashcard-stage">
+            <div id="flashcard-3d" class="flashcard-3d" role="button" tabindex="0" title="Click or Press Space to Flip">
+              <!-- Front Face -->
+              <div class="card-face card-front">
+                <div class="card-top-meta">
+                  <span id="card-deck-tag" class="category-tag">Computer Science</span>
+                  <button id="card-star-btn" class="icon-star-btn" title="Mark for review">★</button>
+                </div>
+                <div class="card-content">
+                  <div class="hint-label">Question</div>
+                  <h2 id="card-question-text" class="card-title">What is a Closure in JavaScript?</h2>
+                  <p id="card-hint-text" class="card-hint"></p>
+                </div>
+                <div class="card-footer-tip">
+                  <span>💡 Click anywhere or press <kbd>Space</kbd> to flip</span>
+                </div>
+              </div>
+
+              <!-- Back Face -->
+              <div class="card-face card-back">
+                <div class="card-top-meta">
+                  <span class="category-tag answer-tag">Answer & Explanation</span>
+                  <span class="flip-back-indicator">↩</span>
+                </div>
+                <div class="card-content">
+                  <div id="card-answer-text" class="card-answer-body">
+                    A closure is a combination of a function bundled together with references to its surrounding state (the lexical environment). It gives you access to an outer function's scope from an inner function.
+                  </div>
+                </div>
+                <div class="card-footer-tip">
+                  <span>💡 Click to flip back</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flashcard Navigation & Assessment Bar -->
+          <div class="flashcard-controls-bar glass-card">
+            <button id="prev-card-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span>Previous</span>
+            </button>
+
+            <div class="mastery-actions">
+              <button id="card-hard-btn" class="btn btn-warning" title="Mark as Need Practice">
+                <span>🤔 Hard / Review</span>
+              </button>
+              <button id="card-easy-btn" class="btn btn-success" title="Mark as Mastered">
+                <span> Got It!</span>
+              </button>
+            </div>
+
+            <button id="next-card-btn" class="btn btn-secondary">
+              <span>Next</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 3: QUIZ MODE                               -->
+      <!-- ============================================== -->
+      <section id="tab-quiz" class="view-panel">
+        <div class="quiz-container">
+          
+          <!-- Quiz Setup / Selection Screen -->
+          <div id="quiz-start-view" class="glass-card quiz-setup-card">
+            <div class="quiz-intro-header">
+              <div class="quiz-badge">🧠 Knowledge Test</div>
+              <h2>Test Your Knowledge</h2>
+              <p>Practice with interactive multiple choice questions. You can choose a topic, test cards from your decks, or take a custom challenge!</p>
+            </div>
+
+            <div class="quiz-setup-grid">
+              <div class="setup-option-card">
+                <h3>Select Quiz Topic</h3>
+                <select id="quiz-topic-select" class="custom-select">
+                  <option value="all">All Topics (Mixed)</option>
+                  <!-- Populated by JS -->
+                </select>
+                <div class="quiz-meta-info">
+                  <span id="quiz-available-count">10 questions available</span>
+                </div>
+              </div>
+
+              <div class="setup-option-card">
+                <h3>Quiz Settings</h3>
+                <div class="setting-checkbox-row">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="quiz-timer-toggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                  <span>Enable 20s Question Timer</span>
+                </div>
+                <div class="setting-checkbox-row">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="quiz-shuffle-toggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                  <span>Shuffle Questions</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="quiz-action-footer">
+              <button id="start-quiz-btn" class="btn btn-primary btn-large">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Start Quiz Challenge</span>
+              </button>
+              <button id="create-quiz-q-btn" class="btn btn-secondary">
+                + Add Custom Question
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Quiz Playing View -->
+          <div id="quiz-play-view" class="glass-card quiz-play-card" style="display: none;">
+            <div class="quiz-top-bar">
+              <div class="quiz-progress-text">
+                Question <span id="quiz-current-num">1</span> of <span id="quiz-total-num">10</span>
+              </div>
+              <div class="quiz-timer-pill" id="quiz-timer-box">
+                ⏱️ <span id="quiz-countdown">20</span>s
+              </div>
+              <div class="quiz-live-score">
+                Score: <span id="quiz-current-score">0</span>
+              </div>
+            </div>
+
+            <!-- Quiz Progress bar -->
+            <div class="quiz-bar-track">
+              <div id="quiz-bar-fill" class="quiz-bar-fill" style="width: 10%;"></div>
+            </div>
+
+            <!-- Question Box -->
+            <div class="quiz-question-box">
+              <span id="quiz-q-category" class="category-tag">Topic</span>
+              <h2 id="quiz-question-title">What is the capital of France?</h2>
+            </div>
+
+            <!-- Choices Grid -->
+            <div id="quiz-options-container" class="quiz-options-grid">
+              <!-- Dynamically populated 4 options -->
+            </div>
+
+            <!-- Feedback banner -->
+            <div id="quiz-feedback-banner" class="quiz-feedback-banner" style="display: none;">
+              <div id="quiz-feedback-text">Correct! Great job.</div>
+              <button id="quiz-next-q-btn" class="btn btn-accent">Next Question →</button>
+            </div>
+          </div>
+
+          <!-- Quiz Results View -->
+          <div id="quiz-result-view" class="glass-card quiz-result-card" style="display: none;">
+            <div class="result-celebration">
+              <div id="result-emoji" class="result-icon-big">🎉</div>
+              <h2 id="result-title">Quiz Completed!</h2>
+              <p id="result-subtitle">You showed great knowledge retention!</p>
+            </div>
+
+            <div class="result-stats-row">
+              <div class="stat-pill-result">
+                <span class="result-number" id="result-score-percent">80%</span>
+                <span class="result-label">Accuracy</span>
+              </div>
+              <div class="stat-pill-result">
+                <span class="result-number" id="result-correct-ratio">8 / 10</span>
+                <span class="result-label">Correct Answers</span>
+              </div>
+              <div class="stat-pill-result">
+                <span class="result-number" id="result-time-taken">45s</span>
+                <span class="result-label">Time Spent</span>
+              </div>
+            </div>
+
+            <!-- Question Review Accordion / List -->
+            <div class="quiz-review-section">
+              <h3>Question Review</h3>
+              <div id="quiz-review-list" class="quiz-review-list">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button id="quiz-retry-btn" class="btn btn-primary">Retake Quiz</button>
+              <button id="quiz-return-home-btn" class="btn btn-secondary">Choose Another Topic</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 4: MANAGE & CUSTOMIZE SETTINGS             -->
+      <!-- ============================================== -->
+      <section id="tab-settings" class="view-panel">
+        <div class="settings-grid">
+          
+          <!-- Pomodoro Custom Durations -->
+          <div class="glass-card settings-card">
+            <div class="settings-card-header">
+              <div class="header-icon">⏱️</div>
+              <div>
+                <h3>Pomodoro Clock Settings</h3>
+                <p>Customize focus and break durations to match your study rhythm.</p>
+              </div>
+            </div>
+
+            <form id="pomodoro-settings-form" class="settings-form">
+              <div class="form-group-grid">
+                <div class="form-field">
+                  <label for="setting-work-time">Work Focus (minutes)</label>
+                  <input type="number" id="setting-work-time" min="1" max="120" value="25" required>
+                </div>
+                <div class="form-field">
+                  <label for="setting-short-break">Short Break (minutes)</label>
+                  <input type="number" id="setting-short-break" min="1" max="60" value="5" required>
+                </div>
+                <div class="form-field">
+                  <label for="setting-long-break">Long Break (minutes)</label>
+                  <input type="number" id="setting-long-break" min="1" max="90" value="15" required>
+                </div>
+                <div class="form-field">
+                  <label for="setting-cycles">Long Break Interval (cycles)</label>
+                  <input type="number" id="setting-cycles" min="1" max="10" value="4" required>
+                </div>
+              </div>
+
+              <div class="form-switches-list">
+                <label class="switch-row">
+                  <span>Auto-start breaks</span>
+                  <input type="checkbox" id="setting-auto-break">
+                </label>
+                <label class="switch-row">
+                  <span>Sound chime notification</span>
+                  <input type="checkbox" id="setting-sound-enabled" checked>
+                </label>
+                <label class="switch-row">
+                  <span>Tick audio sound during focus</span>
+                  <input type="checkbox" id="setting-tick-sound">
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-accent">Save Timer Settings</button>
+                <button type="button" id="btn-reset-timer-defaults" class="btn btn-ghost">Reset Defaults</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Flashcard & Quiz Custom Content Manager -->
+          <div class="glass-card settings-card">
+            <div class="settings-card-header">
+              <div class="header-icon">📚</div>
+              <div>
+                <h3>Card & Quiz Content Manager</h3>
+                <p>Create new flashcards and quiz questions, or manage your library.</p>
+              </div>
+            </div>
+
+            <!-- Content Tabs -->
+            <div class="sub-tabs">
+              <button id="subtab-cards-btn" class="subtab-btn active">Flashcards List (<span id="count-cards-badge">0</span>)</button>
+              <button id="subtab-quiz-btn" class="subtab-btn">Quiz Questions (<span id="count-quiz-badge">0</span>)</button>
+            </div>
+
+            <!-- Flashcards Management Sub-panel -->
+            <div id="panel-manage-cards" class="manage-subpanel active">
+              <div class="panel-actions-row">
+                <button id="open-add-card-modal-btn" class="btn btn-sm btn-accent">+ Create New Card</button>
+                <button id="btn-export-data" class="btn btn-sm btn-secondary">Export JSON</button>
+                <label class="btn btn-sm btn-secondary file-upload-label">
+                  Import JSON
+                  <input type="file" id="import-json-input" accept=".json" style="display:none;">
+                </label>
+              </div>
+
+              <div class="items-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Deck</th>
+                      <th>Question / Front</th>
+                      <th>Answer / Back</th>
+                      <th class="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="manage-cards-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Quiz Questions Management Sub-panel -->
+            <div id="panel-manage-quiz" class="manage-subpanel" style="display: none;">
+              <div class="panel-actions-row">
+                <button id="open-add-quiz-modal-btn" class="btn btn-sm btn-accent">+ Create Quiz Question</button>
+                <button id="btn-auto-gen-quiz" class="btn btn-sm btn-secondary" title="Convert existing flashcards into multiple choice questions">
+                  Auto-Convert Cards to Quiz
+                </button>
+              </div>
+
+              <div class="items-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Question</th>
+                      <th>Correct Answer</th>
+                      <th class="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="manage-quiz-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Reset All Data -->
+            <div class="danger-zone">
+              <span>Need a fresh start?</span>
+              <button id="btn-restore-samples" class="btn btn-sm btn-ghost danger-text">Restore Default Samples</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT FLASHCARD                    -->
+  <!-- ============================================== -->
+  <div id="modal-card" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog glass-card">
+      <div class="modal-header">
+        <h3 id="modal-card-title">Add New Flashcard</h3>
+        <button class="modal-close-btn" data-close="modal-card">&times;</button>
+      </div>
+      <form id="card-form" class="modal-form">
+        <input type="hidden" id="card-edit-id" value="">
+        <div class="form-field">
+          <label for="card-input-deck">Deck / Category</label>
+          <input type="text" id="card-input-deck" list="deck-datalist" placeholder="e.g. Computer Science, History, Biology" required>
+          <datalist id="deck-datalist"></datalist>
+        </div>
+        <div class="form-field">
+          <label for="card-input-front">Front (Question or Term)</label>
+          <textarea id="card-input-front" rows="3" placeholder="Enter what to display on the front of the card..." required></textarea>
+        </div>
+        <div class="form-field">
+          <label for="card-input-back">Back (Answer or Definition)</label>
+          <textarea id="card-input-back" rows="3" placeholder="Enter the solution / explanation..." required></textarea>
+        </div>
+        <div class="form-field">
+          <label for="card-input-hint">Optional Hint</label>
+          <input type="text" id="card-input-hint" placeholder="Short clue if you get stuck">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-card">Cancel</button>
+          <button type="submit" class="btn btn-accent">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT QUIZ QUESTION                -->
+  <!-- ============================================== -->
+  <div id="modal-quiz" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog glass-card">
+      <div class="modal-header">
+        <h3 id="modal-quiz-title">Add Quiz Question</h3>
+        <button class="modal-close-btn" data-close="modal-quiz">&times;</button>
+      </div>
+      <form id="quiz-form" class="modal-form">
+        <input type="hidden" id="quiz-edit-id" value="">
+        <div class="form-field">
+          <label for="quiz-input-category">Category / Topic</label>
+          <input type="text" id="quiz-input-category" placeholder="e.g. Science, Coding, Math" required>
+        </div>
+        <div class="form-field">
+          <label for="quiz-input-question">Question</label>
+          <textarea id="quiz-input-question" rows="2" placeholder="What is the question?" required></textarea>
+        </div>
+        <div class="form-field">
+          <label>Multiple Choice Options (Select the correct one):</label>
+          <div class="options-input-list">
+            <div class="option-input-row">
+              <input type="radio" name="correct-choice" value="0" checked required title="Mark as correct answer">
+              <input type="text" id="quiz-opt-0" class="opt-text" placeholder="Option A (Correct)" required>
+            </div>
+            <div class="option-input-row">
+              <input type="radio" name="correct-choice" value="1" required title="Mark as correct answer">
+              <input type="text" id="quiz-opt-1" class="opt-text" placeholder="Option B" required>
+            </div>
+            <div class="option-input-row">
+              <input type="radio" name="correct-choice" value="2" required title="Mark as correct answer">
+              <input type="text" id="quiz-opt-2" class="opt-text" placeholder="Option C" required>
+            </div>
+            <div class="option-input-row">
+              <input type="radio" name="correct-choice" value="3" required title="Mark as correct answer">
+              <input type="text" id="quiz-opt-3" class="opt-text" placeholder="Option D" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="quiz-input-explanation">Explanation (Shown after answering)</label>
+          <input type="text" id="quiz-input-explanation" placeholder="Brief reason why this answer is correct">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-quiz">Cancel</button>
+          <button type="submit" class="btn btn-accent">Save Question</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
